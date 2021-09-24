@@ -5,6 +5,4 @@ their robots.txt file. The "FBIMostWantedWebScraper.py" file currently reads out
 top ten most wanted criminals by the FBI. I look to expand this file or apply the
 technique to other websites to create an even more interesting project.
 
-This project is yet to be completed.
-
 - Michael
