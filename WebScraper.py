@@ -1,5 +1,3 @@
-# Looking at webscraping the forecast
-
 import requests
 from bs4 import BeautifulSoup
 page = requests.get("http://forecast.weather.gov/MapClick.php?lat=33.4483&lon=-112.0758")

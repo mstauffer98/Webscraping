@@ -1,6 +1,7 @@
 # This is my own work, adapting from the following resource.:
 #       https://www.dataquest.io/blog/web-scraping-tutorial-python/
 #       https://stackoverflow.com/questions/34144389/how-to-get-value-from-tables-td-in-beautifulsoup
+#       https://stackoverflow.com/questions/275018/how-can-i-remove-a-trailing-newline
 
 # I hold no responsibility for anyone's use of my code.
 
