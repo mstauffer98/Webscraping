@@ -41,83 +41,84 @@ i = 0
 wikiSoup = soup.find_all('table', class_="wikitable")
 
 #print(wikiSoup)
+def display():
+    if os.path.exists('Best_Picture_Nominee_RT_Scores.csv'):
+        bp_scores_2 = []
+        with open('Best_Picture_Nominee_RT_Scores.csv', mode='r', newline='') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter='|')
+            year = '1928'
+            year_scores = []
+            for row in csv_reader:
+                # print(row)
+                if row[0] != year:
+                    year = row[0]
+                    bp_scores_2.insert(len(bp_scores_2), year_scores)
+                    year_scores = []
 
-if os.path.exists('Best_Picture_Nominee_RT_Scores.csv'):
-    bp_scores_2 = []
-    with open('Best_Picture_Nominee_RT_Scores.csv', mode='r', newline='') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='|')
-        year = '1928'
-        year_scores = []
-        for row in csv_reader:
-            # print(row)
-            if row[0] != year:
-                year = row[0]
-                bp_scores_2.insert(len(bp_scores_2), year_scores)
-                year_scores = []
+                year_scores.append([int(row[0]), row[1], int(row[2]), int(row[3])])
 
-            year_scores.append([int(row[0]), row[1], int(row[2]), int(row[3])])
+            bp_scores_2.insert(len(bp_scores_2), year_scores)
 
-        bp_scores_2.insert(len(bp_scores_2), year_scores)
+        print(bp_scores_2)
 
-    print(bp_scores_2)
+        for noms in bp_scores_2:
+            print("YEAR:", noms[0][0])
+            i = 0
+            scores = [noms[i][2] for i in range(0, len(noms))]
+            #print("Nom Scores:", scores)
+            maxScore = max(scores)
+            #maxScoreFilms = [i if noms[i][2] == maxScore for i in range(1, len(noms))]
+            maxScoreFilms = []
+            for filmIndex in range(0, len(noms)):
+                if noms[filmIndex][2] == maxScore:
+                    maxScoreFilms.append(filmIndex)
+            if len(maxScoreFilms) > 1:
+                maxReviews = 0
+                maxIndex = 0
+                for filmIndex in maxScoreFilms:
+                    if noms[filmIndex][3] > maxReviews:
+                        maxReviews = noms[filmIndex][3]
+                        maxIndex = filmIndex
 
-    for noms in bp_scores_2:
-        print("YEAR:", noms[0][0])
-        i = 0
-        scores = [noms[i][2] for i in range(0, len(noms))]
-        #print("Nom Scores:", scores)
-        maxScore = max(scores)
-        #maxScoreFilms = [i if noms[i][2] == maxScore for i in range(1, len(noms))]
-        maxScoreFilms = []
-        for filmIndex in range(0, len(noms)):
-            if noms[filmIndex][2] == maxScore:
-                maxScoreFilms.append(filmIndex)
-        if len(maxScoreFilms) > 1:
-            maxReviews = 0
-            maxIndex = 0
-            for filmIndex in maxScoreFilms:
-                if noms[filmIndex][3] > maxReviews:
-                    maxReviews = noms[filmIndex][3]
-                    maxIndex = filmIndex
+                release_year = noms[i][0]
+                film_title = noms[maxIndex][1]
+                rt_score = noms[maxIndex][2]
+                num_reviews = noms[maxIndex][3]
+                print("Highest Rated Rotten Tomatoes Best Picture Nominee for the Year", release_year, ":", film_title)
+                print("     Rotten Tomatoes Score:", rt_score)
+                print("     With", num_reviews, "Reviews")
+            else:
+                maxIndex = maxScoreFilms[0]
+                release_year = noms[maxIndex][0]
+                film_title = noms[maxIndex][1]
+                rt_score = noms[maxIndex][2]
+                num_reviews = noms[maxIndex][3]
+                print("Highest Rated Rotten Tomatoes Best Picture Nominee for the Year", release_year, ":", film_title)
+                print("     Rotten Tomatoes Score:", rt_score)
+                print("     With", num_reviews, "Reviews")
 
-            release_year = noms[i][0]
-            film_title = noms[maxIndex][1]
-            rt_score = noms[maxIndex][2]
-            num_reviews = noms[maxIndex][3]
-            print("Highest Rated Rotten Tomatoes Best Picture Nominee for the Year", release_year, ":", film_title)
-            print("     Rotten Tomatoes Score:", rt_score)
-            print("     With", num_reviews, "Reviews")
-        else:
-            maxIndex = maxScoreFilms[0]
-            release_year = noms[maxIndex][0]
-            film_title = noms[maxIndex][1]
-            rt_score = noms[maxIndex][2]
-            num_reviews = noms[maxIndex][3]
-            print("Highest Rated Rotten Tomatoes Best Picture Nominee for the Year", release_year, ":", film_title)
-            print("     Rotten Tomatoes Score:", rt_score)
-            print("     With", num_reviews, "Reviews")
+            # Compare high-scoring nominee to Best Picture winner
+            print("Was this the Best Picture winner?", end=" ")
+            bpWinnerVals = noms[0]
+            bp_title = bpWinnerVals[1]
+            bp_score = bpWinnerVals[2]
+            bp_reviews = bpWinnerVals[3]
 
-        # Compare high-scoring nominee to Best Picture winner
-        print("Was this the Best Picture winner?", end=" ")
-        bpWinnerVals = noms[0]
-        bp_title = bpWinnerVals[1]
-        bp_score = bpWinnerVals[2]
-        bp_reviews = bpWinnerVals[3]
+            if maxIndex == 0:
+                print("YES")
+                print("Best Picture Winner:", bp_title)
+                print("High Score Nominee:", film_title)
 
-        if maxIndex == 0:
-            print("YES")
-            print("Best Picture Winner:", bp_title)
-            print("High Score Nominee:", film_title)
+            else:
+                print("NO")
+                print("Best Picture Winner:", bp_title)
+                print("High Score Nominee:", film_title)
+                print("   ", rt_score, "(", num_reviews, "Reviews )", ">", bp_score, "(", bp_reviews, "Reviews )")
 
-        else:
-            print("NO")
-            print("Best Picture Winner:", bp_title)
-            print("High Score Nominee:", film_title)
-            print("   ", rt_score, "(", num_reviews, "Reviews )", ">", bp_score, "(", bp_reviews, "Reviews )")
+            print("\n")
 
-        print("\n")
+def create_csv():
 
-else:
     #    if row == []:
     #    else:
 
@@ -153,7 +154,7 @@ else:
             for film_link in film_link_set:
                 if True is True: #"film_link == '/wiki/East_Lynne_(1931_film)' or film_link == '/wiki/Casablanca_(film)' or film_link == '/wiki/Parasite_(2019_film)':
                     film_title = bp_noms[film_num].split(' ')
-                    print(film_title)
+                    print(*film_title)
                     last_word_of_title = ''
                     if 'or' in film_title:
                         last_word_of_title = film_title[film_title.index('or') - 1].lower()
@@ -314,6 +315,11 @@ else:
             csv_writer.writerow([nom_years[row_index], bp_noms[row_index], rt_scores[row_index], num_reviews[row_index]])
             year = year + 1
 
+create_csv()
+#display()
+
 print("")
+
+
 
 
