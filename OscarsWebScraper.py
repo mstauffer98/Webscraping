@@ -21,7 +21,7 @@ import re
 page = requests.get("https://en.wikipedia.org/wiki/Academy_Award_for_Best_Picture")
 soup = BeautifulSoup(page.content, 'html.parser')
 
-
+print("HULA HOOP!")
 
 
 # Find specific content
@@ -152,71 +152,71 @@ def create_csv():
 
              # print(film_link_set)
             for film_link in film_link_set:
-                if True is True: #"film_link == '/wiki/East_Lynne_(1931_film)' or film_link == '/wiki/Casablanca_(film)' or film_link == '/wiki/Parasite_(2019_film)':
-                    film_title = bp_noms[film_num].split(' ')
-                    print(*film_title)
-                    last_word_of_title = ''
-                    if 'or' in film_title:
-                        last_word_of_title = film_title[film_title.index('or') - 1].lower()
-                    for word in film_title:
-                        if ':' in word:
-                            last_word_of_title = word.lower()
-                            break
-                    if last_word_of_title == '':
-                        last_word_of_title = film_title[-1].lower()#.replace('*', '').replace('-', '')
-                    last_word_of_title = re.sub(r'[^\w\s]', '', last_word_of_title).replace('é', 'e') # https://www.geeksforgeeks.org/python-remove-punctuation-from-string/
-                    # last_word_of_title = unidecode.unidecode(last_word_of_title)
-                    #bp_noms.append(film_link)
-                    rt_url = ''#"https://www.rottentomatoes.com/m/" + film.lower().translate(str.maketrans('', '', string.punctuation)).replace(" ", "_")
+                #"film_link == '/wiki/East_Lynne_(1931_film)' or film_link == '/wiki/Casablanca_(film)' or film_link == '/wiki/Parasite_(2019_film)':
+                film_title = bp_noms[film_num].split(' ')
+                print(*film_title)
+                last_word_of_title = ''
+                if 'or' in film_title:
+                    last_word_of_title = film_title[film_title.index('or') - 1].lower()
+                for word in film_title:
+                    if ':' in word:
+                        last_word_of_title = word.lower()
+                        break
+                if last_word_of_title == '':
+                    last_word_of_title = film_title[-1].lower()#.replace('*', '').replace('-', '')
+                last_word_of_title = re.sub(r'[^\w\s]', '', last_word_of_title).replace('é', 'e') # https://www.geeksforgeeks.org/python-remove-punctuation-from-string/
+                # last_word_of_title = unidecode.unidecode(last_word_of_title)
+                #bp_noms.append(film_link)
+                rt_url = ''#"https://www.rottentomatoes.com/m/" + film.lower().translate(str.maketrans('', '', string.punctuation)).replace(" ", "_")
 
-                    article = requests.get('https://en.wikipedia.org' + film_link)
-                    article_soup = BeautifulSoup(article.content, 'html.parser')
-                    last_film_link = ''
-                    for a in article_soup.find_all('a', href=True):
-                        if a['href'].startswith('https://www.rottentomatoes.com/m') or a['href'].startswith('http://www.rottentomatoes.com/m'):
-                            last_film_link = a['href']
-                            print(a['href'])
+                article = requests.get('https://en.wikipedia.org' + film_link)
+                article_soup = BeautifulSoup(article.content, 'html.parser')
+                last_film_link = ''
+                for a in article_soup.find_all('a', href=True):
+                    if a['href'].startswith('https://www.rottentomatoes.com/m') or a['href'].startswith('http://www.rottentomatoes.com/m'):
+                        last_film_link = a['href']
+                        print(a['href'])
 
-                        #print(lastWordOfTitle)
-                        if (a['href'].startswith('https://www.rottentomatoes.com/m') or a['href'].startswith('http://www.rottentomatoes.com/m')) and last_word_of_title in a['href']:
-                            rt_url = a['href']
-                            if 'https' not in rt_url:
-                                rt_url = rt_url.replace('http', 'https')
-                    if rt_url == '':
-                        rt_url = last_film_link
+                    #print(lastWordOfTitle)
+                    if (a['href'].startswith('https://www.rottentomatoes.com/m') or a['href'].startswith('http://www.rottentomatoes.com/m')) and last_word_of_title in a['href']:
+                        rt_url = a['href']
+                        if 'https' not in rt_url:
+                            rt_url = rt_url.replace('http', 'https')
+                if rt_url == '':
+                    rt_url = last_film_link
 
-                    if rt_url.endswith('/reviews'):
-                        rt_url = rt_url[:len(rt_url) - 7]
-                    print(rt_url)
+                if rt_url.endswith('/reviews'):
+                    rt_url = rt_url[:len(rt_url) - 7]
+                print(rt_url)
 
 
-                    if rt_url != '':
-                        page = requests.get(rt_url)
-                        soup = BeautifulSoup(page.content, 'html.parser')
-                        #if (soup.find(id="tomato_meter_link") != None):
-                        if (soup.find(id="topSection") != None):
-                            #main_content = soup.find(id="tomato_meter_link")
-                            score_content = soup.find(id="topSection")
-                            #score_html = main_content.select(".mop-ratings-wrap__percentage")
-                            score_html = score_content.find("score-board")
-                            #print(rt_url)
-                            rt_scores.append(score_html['tomatometerscore'])
-                            print(rt_scores[-1], type(rt_scores[-1]))
-                            #rt_score.append([nm.get_text().strip() for nm in score_html])
-                            reviews_text = score_content.find(attrs={'data-qa': 'tomatometer-review-count'}).get_text()
-                            print(reviews_text, type(reviews_text))
-                            num_reviews.append(reviews_text[:len(reviews_text) - 8])
-                        else:
-                            rt_scores.append('??')
-                            num_reviews.append('??')
-
-                        film_num = film_num + 1
+                if rt_url != '':
+                    page = requests.get(rt_url)
+                    soup = BeautifulSoup(page.content, 'html.parser')
+                    #if (soup.find(id="tomato_meter_link") != None):
+                    if (soup.find(id="topSection") != None):
+                        #main_content = soup.find(id="tomato_meter_link")
+                        score_content = soup.find(id="topSection")
+                        #score_html = main_content.select(".mop-ratings-wrap__percentage")
+                        score_html = score_content.find("score-board")
+                        #print(rt_url)
+                        rt_scores.append(score_html['tomatometerscore'])
+                        print(rt_scores[-1], type(rt_scores[-1]))
+                        #rt_score.append([nm.get_text().strip() for nm in score_html])
+                        reviews_text = score_content.find(attrs={'data-qa': 'tomatometer-review-count'}).get_text()
+                        print(reviews_text, type(reviews_text))
+                        num_reviews.append(reviews_text[:len(reviews_text) - 8])
                     else:
-                        raise Exception('ERROR: Rotten Tomatoes URL not found.')
+                        rt_scores.append('??')
+                        num_reviews.append('??')
 
-            #   print(rt_score)
-            #num_noms
-            # print(bp_noms[0])
+                    film_num = film_num + 1
+                else:
+                    raise Exception('ERROR: Rotten Tomatoes URL not found.')
+        print("\n")
+        #   print(rt_score)
+        #num_noms
+        # print(bp_noms[0])
 
         # bp_noms_cat =np.concatenate([bp_noms[0],bp_noms[1]])
 
